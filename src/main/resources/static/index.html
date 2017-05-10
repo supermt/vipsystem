@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VIP 管理系统</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/mytemplate.css" rel="stylesheet">
+    <script src="jslib/jquery-3.2.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var url = "/list";
+            var _self = this;
+            $.get(url, function(users) {
+                console.log(users);
+                var tr = $("#table");
+                for (var i = 0; i < users.length; i++) {
+                    var tbBody = "";
+                    tbBody = "<tr><td>" + users[i].id + "</td><td>" + users[i].name + "</td><td>" + users[i].rank + "</td><td>" + users[i].totalCount + "</td><td>" + users[i].balance + "</td></tr>";
+                    tr.append(tbBody);
+                }
+            });
+
+            $("#b02").click(function() {
+                var name = $("#name_add").val();
+                var rank = $("#rank_add").val();
+                var balance = $("#balance_add").val();
+                var totalCount = $("#totalCount_add").val();
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "/create",
+                    "method": "POST",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "processData": false,
+                    "data": "{\n    \"name\": \"" + name + "\",\n    \"rank\": \"" + rank + "\",\n    \"balance\": " + balance + ",\n    \"totalCount\": " + totalCount + "\n  }"
+                }
+                $.ajax(settings).done(function(response) {
+                    console.log(response);
+                    var tbBody = "";
+                    tbBody = "<tr><td>" + response.id + "</td><td>" + response.name + "</td><td>" + response.rank + "</td><td>" + response.totalCount + "</td><td>" + response.balance + "</td></tr>";
+                    $("#table").append(tbBody);
+                });
+            });
+
+            $("#b03").click(function() {
+                var name = $("#name_modify").val();
+                var rank = $("#rank_modify").val();
+                var balance = $("#balance_modify").val();
+                var totalCount = $("#totalCount_modify").val();
+                var id = $("#id_modify").val();
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "/update",
+                    "method": "PUT",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "processData": false,
+                    "data": "{\n\"id\":" + id + ",\n    \"name\": \"" + name + "\",\n    \"rank\": \"" + rank + "\",\n    \"balance\": " + balance + ",\n    \"totalCount\": " + totalCount + "\n  }"
+                }
+                $.ajax(settings).done(function(response) {
+                    console.log(response);
+                    location.reload();
+                });
+            });
+
+            $("#b04").click(function() {
+                var id = $("#id_remove").val();
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "delete/" + id,
+                    "method": "DELETE",
+                    "headers": {
+                        "cache-control": "no-cache"
+                    }
+                }
+
+                $.ajax(settings).done(function(response) {
+                    console.log(response);
+                    location.reload();
+                });
+            });
+
+            $("#b05").click(function() {
+                var id = $("#id_consume").val();
+                var count = $("#count_consume").val();
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "/update/consume?userid=" + id + "&count=" + count,
+                    "method": "PUT",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "processData": false,
+                }
+
+                $.ajax(settings).done(function(response) {
+                    console.log(response);
+                    location.reload();
+                });
+            });
+
+            $("#b06").click(function() {
+                var id = $("#id_charge").val();
+                var count = $("#count_charge").val();
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "/update/charge?userid=" + id + "&count=" + count,
+                    "method": "PUT",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache"
+                    },
+                    "processData": false,
+                }
+
+                $.ajax(settings).done(function(response) {
+                    console.log(response);
+                    location.reload();
+                });
+            });
+
+        });
+    </script>
+</head>
+
+
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">理发店 VIP 管理系统</a>
+      </div>
+  </nav>
+    <div class="jumbotron">
+        <table id="table" class="table">
+            <tr>
+                <th>编号</th>
+                <th>用户名</th>
+                <th>用户级别</th>
+                <th>积分</th>
+                <th>用户余额</th>
+            </tr>
+        </table>
+        <datalist id="itemlist">
+            <option>Normal_User</option>
+            <option>Bronze_User</option>
+            <option>Silver_User</option>
+            <option>Golden_User</option>
+        </datalist>
+        <div class="container">
+            <div class="row">
+                <h4>添加测试</h4>
+                姓名：<input type="text" id="name_add" class="form-control" /><br /> 用户级别：
+                <input type="text" list="itemlist" id="rank_add" class="form-control" /><br /> 用户余额：
+                <input type="text" id="balance_add" class="form-control" /><br /> 用户积分：
+                <input type="text" id="totalCount_add" class="form-control" /><br />
+            </div>
+
+
+            <button id="b02" role="button" class="btn btn-primary btn-lg">添加测试用户</button>
+
+            <div class="row">
+                <h4>修改测试</h4>
+                用户编号：<input type="text" id="id_modify" class="form-control" /><br /> 姓名：
+                <input type="text" list="itemlist" id="name_modify" class="form-control" /><br /> 用户级别：
+                <input type="text" id="rank_modify" class="form-control" /><br /> 用户余额：
+                <input type="text" id="balance_modify" class="form-control" /><br /> 用户积分：
+                <input type="text" id="totalCount_modify" class="form-control" /><br />
+            </div>
+
+            <button id="b03" role="button" class="btn btn-primary btn-lg">修改用户属性</button>
+
+            <div class="row">
+                <h4> 删除测试</h4>
+                用户编号：<input type="text" id="id_remove" class="form-control" /><br />
+            </div>
+
+            <button id="b04" role="button" class="btn btn-primary btn-lg">删除用户</button>
+
+            <div class="row">
+                <h4>消费</h4>
+                用户编号：<input type="text" id="id_consume" class="form-control" /><br /> 金额:
+                <input type="text" id="count_consume" class="form-control" /><br />
+            </div>
+
+            <button id="b05" role="button" class="btn btn-primary btn-lg">用户消费测试</button>
+
+            <div class="row">
+                <h4>消费</h4>
+                用户编号：<input type="text" id="id_charge" class="form-control" /><br /> 金额:
+                <input type="text" id="count_charge" class="form-control" /><br />
+            </div>
+
+            <button id="b06" role="button" class="btn btn-primary btn-lg">用户冲钱测试</button>
+
+        </div>
+    </div>
+          <hr>
+    <footer>
+      <p>&copy; MSStudioUestc 2017</p>
+    </footer>
+  </div>
+  <script src="jslib/jquery-min.js"></script>
+  <script src="jslib/bootstrap.min.js"></script>
+</body>
+
+</html>

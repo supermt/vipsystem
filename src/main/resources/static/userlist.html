@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+<body>
+<div>
+  <table border="1" id = "table">
+  <tr>
+  <th>编号</th>
+  <th>用户名</th>
+  <th>用户级别</th>
+  <th>积分</th>
+  <th>用户余额</th>
+  </tr>
+  </table>
+
+</div>
+
+<script>
+$(document).ready(function(){
+      var url="../list";
+      var _self=this;
+      $.get(url,function(users){
+          console.log(users);
+          var tr = $("#table");
+          for (var i = 0; i < users.length; i++) {
+            var tbBody = "";
+            tbBody = "<tr><td>"+users[i].id+"</td><td>"+users[i].name+"</td><td>"+users[i].rank+"</td><td>"+users[i].totalCount+"</td><td>"+users[i].balance+"</td></tr>";
+            tr.append(tbBody);
+          }
+      })
+  });
+</script>
+</body>
+</html>
